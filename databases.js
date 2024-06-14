@@ -1,8 +1,8 @@
 import { databases } from "./appwrite";
 import { ID } from "appwrite";
 
-const DATABASE__ID = import.meta.env.VITE_DATABASE_ID
-const COLLECTION_NOTES_ID = import.meta.env.VITE_COLLECTION_NOTES_ID
+const DATABASE__ID = '666c82e70025ee5c58a5'
+const COLLECTION_NOTES_ID = '666c830a0002765648b2'
 
 const collections = [
     {
