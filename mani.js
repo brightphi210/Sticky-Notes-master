@@ -44,10 +44,10 @@ async function addItem(item){
     const deleteBtn = document.getElementById(`delete-${item.$id}`)
     deleteBtn.addEventListener('click', handleDelete)
 
-    //2 - Add event listeners - 2.2 - Mouse down event for drag
+    //2 - Add event listeners - 2.2 - Mouse and touch down event for drag
     const cardHeader = Array.from(document.getElementsByClassName('card-header')).find(element => item.$id === element.dataset.id)
     cardHeader.addEventListener("mousedown", mouseDown);
-    cardHeader.addEventListener("touchstart", touchStart);
+    cardHeader.addEventListener("touchstart", touchStart, { passive: false });
 
     //2 - Add event listeners - 2.3 Grow textArea
     const textArea = Array.from(document.querySelectorAll('.card-body textarea')).find(element => item.$id === element.dataset.id)
@@ -76,6 +76,7 @@ function mouseMove(e) {
 }
 
 function touchMove(e) {
+  e.preventDefault();
   // calculate the new position
   newPosX = startPosX - e.touches[0].clientX;
   newPosY = startPosY - e.touches[0].clientY;
@@ -110,14 +111,13 @@ function mouseDown(e) {
   //Add event on mouse down, then remove it on mouse up
   document.addEventListener('mousemove', mouseMove);
 
-  //Remove event listener on mouse up
   document.addEventListener('mouseup', function(){
     const id = selected.dataset.id
     const lastPosition = {x:selected.style.left.replace("px", ""), y:selected.style.top.replace("px", "")}
     addToQueue(id, 'position', lastPosition)
 
     document.removeEventListener('mousemove', mouseMove);
-  }, { once: true });
+  });
 }
 
 function touchStart(e) {
@@ -141,14 +141,13 @@ function touchStart(e) {
   //Add event on touch start, then remove it on touch end
   document.addEventListener('touchmove', touchMove);
 
-  //Remove event listener on touch end
   document.addEventListener('touchend', function(){
     const id = selected.dataset.id
     const lastPosition = {x:selected.style.left.replace("px", ""), y:selected.style.top.replace("px", "")}
     addToQueue(id, 'position', lastPosition)
 
     document.removeEventListener('touchmove', touchMove);
-  }, { once: true });
+  });
 }
 
 loadData()
@@ -212,7 +211,7 @@ addBtn.addEventListener('click', async () => {
   const item = items[items.length - 1]
   selected =  item.parentElement
   item.addEventListener("mousedown", mouseDown)
-  item.addEventListener("touchstart", touchStart)
+  item.addEventListener("touchstart", touchStart, { passive: false })
 
   //3 - Style cards
  const textArea = item.parentElement.querySelectorAll('textarea')[0]
